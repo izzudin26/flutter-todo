@@ -1,7 +1,7 @@
 class Todo{
   String todoName;
   String status;
-  DateTime duedate;
+  String duedate;
 
   Todo({this.todoName, this.duedate, this.status});
 
