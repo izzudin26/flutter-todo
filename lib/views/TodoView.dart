@@ -1,10 +1,21 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_unicons/flutter_unicons.dart';
 import 'package:provider/provider.dart';
 import 'package:todolist/Provider/TodoProvider.dart';
 import 'package:intl/intl.dart';
+import 'package:todolist/Provider/UserProvider.dart';
 import 'components/FloatButton.dart';
+import 'package:todolist/Models/Todo.dart';
+import 'package:todolist/views/components/TodoUncompleteList.dart';
 
-class TodoView extends StatelessWidget {
+class TodoView extends StatefulWidget {
+  @override
+  _TodoViewState createState() => _TodoViewState();
+}
+
+class _TodoViewState extends State<TodoView> {
   String dateformatter() {
     DateTime _date = DateTime.now();
     String days = _date.toIso8601String().substring(8, 10);
@@ -39,17 +50,18 @@ class TodoView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return ChangeNotifierProvider(
-      create: (context) => TodoProvider(),
-      child: Scaffold(
+    return Scaffold(
         floatingActionButton: FloatButton(providercontext: context),
-          body: ListView(
-        children: [
-          Stack(
-            children: [
-              Container(
-                padding: EdgeInsets.all(30),
-                height: size.height * .3,
+        body: Consumer<TodoProvider>(
+          builder: (context, todoprovider, _) {
+            if (todoprovider.uncompleteTask == null) {
+              todoprovider.getTask();
+            }
+            return RefreshIndicator(
+              onRefresh: () {
+                return todoprovider.getTask();
+              },
+              child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Color(0xff374ABE), Color(0xff64B6FF)],
@@ -57,104 +69,62 @@ class TodoView extends StatelessWidget {
                     end: Alignment.centerRight,
                   ),
                 ),
-                child: Column(
+                child: ListView(
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          "Todo Nama",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
+                    Container(
+                      padding: EdgeInsets.all(30),
+                      height: size.height * .2,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xff374ABE), Color(0xff64B6FF)],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Unicon(
+                                UniconData.uniUser,
+                                color: Colors.white,
+                              ),
+                              Consumer<UserProvider>(
+                                  builder: (context, userprov, _) {
+                                if (userprov.username == null) {
+                                  userprov.getUsername();
+                                  print(userprov.username);
+                                }
+                                return Text(
+                                  "${userprov.username}",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
+                                );
+                              })
+                            ],
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(top: 50),
+                              child: Text(
+                                dateformatter(),
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                ),
+                              ))
+                        ],
+                      ),
                     ),
                     Container(
-                        margin: EdgeInsets.only(top: 50),
-                        child: Text(
-                          dateformatter(),
-                          style: TextStyle(
-                            fontSize: 25,
-                            color: Colors.white,
-                          ),
-                        ))
+                      height: todoprovider.uncompleteTask.length < 1 ? size.height * .75 : null,
+                        child: TodoUncompleteList()),
                   ],
                 ),
               ),
-              Positioned(top: size.height * .2, child: todolist(context)),
-              Container(
-                height: size.height * .7,
-              )
-            ],
-          ),
-        ],
-      )),
-    );
-  }
-
-  Widget todolist(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: SizedBox(
-              width: size.width * .2,
-              height: 5,
-              child: Container(
-                color: Colors.blue,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              elevation: 2,
-              child: Column(
-                children: [
-                  ListTile(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("Bekerja"),
-                        IconButton(icon: Icon(Icons.delete), onPressed: () {})
-                      ],
-                    ),
-                    subtitle: Text("12-Nov-2020"),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                          child: IconButton(
-                        icon: Icon(
-                          Icons.check,
-                          color: Colors.lightGreen,
-                        ),
-                        onPressed: () {},
-                      )),
-                      Expanded(
-                          child: IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.redAccent,
-                        ),
-                        onPressed: () {},
-                      ))
-                    ],
-                  )
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
+            );
+          },
+        ));
   }
 }

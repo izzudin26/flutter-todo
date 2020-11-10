@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:localstorage/localstorage.dart';
 
 class UserProvider extends ChangeNotifier {
     String username;
     LocalStorage storage = new LocalStorage("todolist");
 
-    void getUsername() async {
-      this.username = await storage.getItem("name");
+    Future<String> getUsername() async {
+      String getName = await storage.getItem("name");
+      this.username = getName;
+      print(getName);
       notifyListeners();
+      return getName;
     }
 
-    void setUsername(String newName) async {
-      await storage.setItem("name", newName);
+    void setUsername() async {
+      await storage.setItem("name", username);
       notifyListeners();
     }
 }
