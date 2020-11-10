@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todolist/views/Login.dart';
+import 'package:todolist/views/MainNavigator.dart';
+import 'package:todolist/views/SplashScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,13 +12,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'TodoList',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Login(),
+      initialRoute: "SplashScreen",
+      routes: {
+        "SplashScreen": (context) => SplashScreen(),
+        "MainNavigator": (context) => MainNavigator(),
+        "Login": (context) => Login()
+      },
     );
   }
 }
