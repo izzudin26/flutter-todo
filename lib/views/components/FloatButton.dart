@@ -86,7 +86,6 @@ class _FloatButtonState extends State<FloatButton> {
                 onTap: () {
                   showDatePicker(context);
                 },
-                readOnly: true,
                 controller: TextEditingController(text: todoprovider.duedate),
                 decoration: InputDecoration(
                     labelText: "Batas Waktu",

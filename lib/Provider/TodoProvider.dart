@@ -56,7 +56,8 @@ class TodoProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeTask(int index) {
+  void removeTask(Todo removeTodo) {
+    int index = _task.indexOf(removeTodo);
     _task.removeAt(index);
     List<Map<String, dynamic>> newJsonTask =
         _task.map((e) => e.toJson()).toList();
@@ -65,8 +66,10 @@ class TodoProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateStatusTask(int index, String status) {
-    _task[index].status = status;
+  void updateStatusTask(Todo currentTodo, String newStatus) {
+    int status = _task.indexOf(currentTodo);
+    print(status);
+    _task[status].status = newStatus;
     List<Map<String, dynamic>> newJsonTask =
         _task.map((e) => e.toJson()).toList();
     String storedJsonTask = jsonEncode(newJsonTask);

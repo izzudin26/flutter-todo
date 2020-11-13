@@ -74,7 +74,7 @@ class Login extends StatelessWidget {
         child: RaisedButton(
           onPressed: () {
             final provideruser = Provider.of<UserProvider>(context, listen: false);
-            if(userprov.username == null || userprov.username == ""){
+            if(userprov.username == null || userprov.username.trim() == ""){
               showsnackbar(context, "Mohon Mengisi kolom nama");
             }else{
               provideruser.setUsername();

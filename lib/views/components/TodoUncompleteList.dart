@@ -54,7 +54,7 @@ class TodoUncompleteList extends StatelessWidget {
                                                   color: Colors.deepOrange,
                                                 ),
                                                 onPressed: () {
-                                                  todoprovider.removeTask(index);
+                                                  todoprovider.removeTask(task);
                                                 })
                                           ],
                                         ),
@@ -72,7 +72,7 @@ class TodoUncompleteList extends StatelessWidget {
                                             ),
                                             onPressed: () {
                                               todoprovider.updateStatusTask(
-                                                  index, "complete");
+                                                  task, "complete");
                                             },
                                           )),
                                           Expanded(
@@ -82,8 +82,9 @@ class TodoUncompleteList extends StatelessWidget {
                                               color: Colors.redAccent,
                                             ),
                                             onPressed: () {
+                                              print(index);
                                               todoprovider.updateStatusTask(
-                                                  index, "failed");
+                                                  task, "failed");
                                             },
                                           ))
                                         ],
